@@ -1,0 +1,22 @@
+---
+- hosts: Masters
+  tasks:
+    - name: copy k8s manifest to k8s machine
+      copy:
+        src: recommended.yaml 
+        dest: /recommended.yaml 
+
+    - name: Deploy app
+      command: |
+        kubectl apply -f /recommended.yaml 
+      ignore_errors: yes
+    
+    - name: Update svc
+      command: |
+        kubectl patch svc kubernetes-dashboard -n kubernetes-dashboard -p '{"spec": {"type": "ClusterIP", "externalIPs":["10.0.0.81"]}}'
+      ignore_errors: yes
+    
+    - name: delete file
+      file:
+        path: /recommended.yml 
+        state: absent

@@ -1,0 +1,17 @@
+---
+- hosts: Masters
+  tasks:
+    - name: copy k8s manifest to k8s machine
+      copy:
+        src: testapp-init-manifest.yml 
+        dest: /testapp-init-manifest.yml
+
+    - name: Deploy app
+      command: |
+        kubectl apply -f /testapp-init-manifest.yml
+      ignore_errors: yes
+      
+    - name: delete file
+      file:
+        path: /testapp-init-manifest.yml
+        state: absent

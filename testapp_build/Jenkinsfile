@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage ('Change permisson on Container') {
+            steps {
+                sh "chmod +rwx build_container/*"
+            }
+        }
+        stage ('Build Container') {
+            steps {
+                sh "docker build build_container -t registry.cybr.com:5000/test-app:latest"
+            }
+        }
+        stage ('Push container to local registry') {
+            steps {
+                sh "docker push registry.cybr.com:5000/test-app:latest"
+            }
+        }
+        stage ('Delete local files') {
+            steps {
+                sh "rm -Rf build_container"
+            }
+        }
+    }
+}
